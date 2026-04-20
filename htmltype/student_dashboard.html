@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Attendance</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f5f7fa;
+      margin: 0;
+      padding: 0;
+      padding-top: 40px;
+      padding-bottom: 40px;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+    h1 {
+      color: #2c3e50;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    /* Attendance History section */
+    section.history {
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      padding: 20px 24px;
+      margin-bottom: 20px;
+    }
+    section.history h2 {
+      margin-top: 0;
+      color: #2c3e50;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 6px;
+      margin-bottom: 16px;
+      font-size: 1.1rem;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 12px;
+    }
+    th {
+      background-color: #3498db;
+      color: white;
+      padding: 10px 12px;
+      text-align: left;
+      font-weight: normal;
+    }
+    td {
+      padding: 9px 12px;
+      border-bottom: 1px solid #eee;
+    }
+    tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    /* Attendance Summary section */
+    section.summary {
+      background-color: #f0f7ff;
+      border-radius: 10px;
+      padding: 16px 20px;
+      border-left: 4px solid #3498db;
+    }
+    section.summary h2 {
+      margin-top: 0;
+      color: #2c3e50;
+      font-size: 1rem;
+      margin-bottom: 8px;
+    }
+    section.summary p {
+      margin: 4px 0;
+      color: #34495e;
+      font-size: 14px;
+    }
+    section.summary strong {
+      color: #2c3e50;
+    }
+
+    /* Responsive tweak */
+    @media (max-width: 550px) {
+      table {
+        font-size: 13px;
+      }
+      th,
+      td {
+        padding: 6px 8px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Juan Dela Cruz – Attendance Records</h1>
+
+    <!-- Attendance History -->
+    <section class="history">
+      <h2>Attendance History</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Class</th>
+            <th>Status</th>
+            <th>Remarks</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>2026-04-01</td>
+            <td>BSIT 1A – IT Fundamentals</td>
+            <td>Present</td>
+            <td>–</td>
+          </tr>
+          <tr>
+            <td>2026-04-03</td>
+            <td>BSIT 1A – Programming</td>
+            <td>Absent</td>
+            <td>Medical reason</td>
+          </tr>
+          <!-- Add more rows as needed -->
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Attendance Summary -->
+    <section class="summary">
+      <h2>Attendance Summary</h2>
+      <p><strong>Total Classes:</strong> 10</p>
+      <p><strong>Present:</strong> 8</p>
+      <p><strong>Absent:</strong> 2</p>
+      <p><strong>Attendance Rate:</strong> 80%</p>
+    </section>
+  </div>
+</body>
+</html>

@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mark Attendance (Teacher)</title>
+  <script src="https://unpkg.com/jsqr@1.4.0/dist/jsQR.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f5f7fa;
+      margin: 0;
+      padding: 0;
+      padding-top: 40px;
+      padding-bottom: 40px;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    h1 {
+      color: #2c3e50;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    /* Session header */
+    section.session {
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      padding: 20px 24px;
+      margin-bottom: 20px;
+    }
+    section.session h2 {
+      margin-top: 0;
+      color: #34495e;
+      font-size: 1.1rem;
+      margin-bottom: 12px;
+    }
+    section.session label {
+      display: inline-block;
+      margin-right: 8px;
+      margin-bottom: 4px;
+      color: #34495e;
+      font-weight: 500;
+    }
+    section.session select,
+    section.session input[type="date"],
+    section.session input[type="time"] {
+      padding: 6px 10px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 14px;
+      margin-right: 16px;
+    }
+    section.session button.qr {
+      margin-top: 12px;
+      padding: 8px 14px;
+      background-color: #3498db;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    section.session button.qr:hover {
+      background-color: #2980b9;
+    }
+    section.session button.qr:disabled {
+      background-color: #bdc3c7;
+      cursor: not-allowed;
+    }
+
+    /* QR Scanner */
+    .qr-camera {
+      margin-top: 12px;
+      text-align: center;
+      position: relative;
+    }
+    .qr-camera.active {
+      border: 2px solid #27ae60;
+    }
+    #qr-reader {
+      width: 100%;
+      max-width: 400px;
+      height: 300px;
+      margin: 0 auto;
+      position: relative;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      overflow: hidden;
+      background: #000;
+    }
+    #qr-reader video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .scan-frame {
+      position: absolute;
+      top: 25%;
+      left: 25%;
+      width: 50%;
+      height: 50%;
+      border: 3px solid #00ff00;
+      box-shadow: 0 0 20px #00ff00;
+      pointer-events: none;
+      z-index: 10;
+    }
+    .qr-status {
+      margin-top: 10px;
+      padding: 8px;
+      border-radius: 4px;
+      font-weight: 500;
+    }
+    .qr-status.scanning {
+      background: rgba(39, 174, 96, 0.1);
+      color: #27ae60;
+      border: 1px solid #27ae60;
+    }
+    .qr-status.success {
+      background: rgba(39, 174, 96, 0.2);
+      color: #27ae60;
+    }
+    .qr-status.error {
+      background: rgba(231, 76, 60, 0.1);
+      color: #e74c3c;
+      border: 1px solid #e74c3c;
+    }
+
+    /* Student table */
+    section.attendance {
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      padding: 20px 24px;
+      margin-bottom: 20px;
+    }
+    section.attendance h2 {
+      margin-top: 0;
+      color: #2c3e50;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 12px;
+    }
+    th {
+      background-color: #3498db;
+      color: white;
+      text-align: left;
+      padding: 10px 12px;
+      font-weight: normal;
+    }
+    td {
+      padding: 8px 12px;
+      border-bottom: 1px solid #eee;
+    }
+    tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    select {
+      padding: 6px 10px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 14px;
+      min-width: 100px;
+    }
+    input[type="text"] {
+      padding: 6px 8px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 13px;
+      width: 100%;
+    }
+    button[type="submit"] {
+      padding: 10px 16px;
+      background-color: #27ae60;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    button[type="submit"]:hover {
+      background-color: #219653;
+    }
+
+    /* Summary section */
+    section.summary {
+      background-color: #f0f7ff;
+      border-radius: 10px;
+      padding: 16px 20px;
+      border-left: 4px solid #3498db;
+    }
+    section.summary h2 {
+      margin-top: 0;
+      color: #2c3e50;
+      font-size: 1rem;
+      margin-bottom: 8px;
+    }
+    section.summary p {
+      margin: 4px 0;
+      color: #34495e;
+      font-size: 14px;
+    }
+
+    @media (max-width: 768px) {
+      #qr-reader {
+        max-width: 100%;
+        height: 250px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Mark Attendance</h1>
+
+    <!-- Session header -->
+    <section class="session">
+      <h2>Session Details</h2>
+      <form id="sessionForm">
+        <label for="class">Class:</label>
+        <select id="class" name="class">
+          <option value="bsit1a">BSIT 1A</option>
+          <option value="bsit1b">BSIT 1B</option>
+          <option value="bsce1a">BSCE 1A</option>
+        </select>
+
+        <label for="date">Date:</label>
+        <input type="date" id="date" name="date" value="2026-04-06" />
+
+        <label for="time">Time:</label>
+        <input type="time" id="time" name="time" value="08:00" />
+
+        <button type="button" class="qr" id="generateQR">Start camera</button>
+      </form>
+
+      <!-- QR Scanner -->
+      <div class="qr-camera" id="qr-camera-container">
+        <div id="qr-reader"></div>
+        <div id="qr-status" class="qr-status">Click "Start camera" to start scanner</div>
+      </div>
+    </section>
+
+    <!-- Student attendance table -->
+    <section class="attendance">
+      <h2 id="classHeader">Class: BSIT 1A</h2>
+      <table id="attendanceTable">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Student ID</th>
+            <th>Name</th>
+            <th>Status</th>
+            <th>Time</th>
+            <th>Remarks</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Dynamic content -->
+        </tbody>
+      </table>
+      <button type="button" id="submitAttendance">Submit Attendance</button>
+    </section>
+
+    <!-- Summary section -->
+    <section class="summary">
+      <h2>Attendance Summary</h2>
+      <p id="totalStudents"><strong>Total Students:</strong> 0</p>
+      <p id="presentCount"><strong>Present:</strong> 0</p>
+      <p id="absentCount"><strong>Absent:</strong> 0</p>
+      <p id="lateCount"><strong>Late:</strong> 0</p>
+    </section>
+  </div>
+
+  <script>
+    class QRScanner {
+      constructor(containerId = 'qr-reader') {
+        this.container = document.getElementById(containerId);
+        this.video = document.createElement('video');
+        this.canvas = document.createElement('canvas');
+        this.ctx = this.canvas.getContext('2d');
+        
+        this.stream = null;
+        this.scanning = false;
+        this.animationId = null;
+        
+        this.video.autoplay = true;
+        this.video.playsInline = true;
+        this.container.appendChild(this.video);
+        this.canvas.style.display = 'none';
+        this.container.appendChild(this.canvas);
+        
+        this.video.addEventListener('loadedmetadata', () => {
+          this.canvas.width = this.video.videoWidth;
+          this.canvas.height = this.video.videoHeight;
+        });
+      }
+      
+      async start() {
+        try {
+          this.stream = await navigator.mediaDevices.getUserMedia({
+            video: { 
+              facingMode: 'environment',
+              width: { ideal: 1280 },
+              height: { ideal: 720 }
+            }
+          });
+          
+          this.video.srcObject = this.stream;
+          await this.video.play();
+          this.scanning = true;
+          this.scan();
+          return true;
+        } catch (err) {
+          console.error('Camera access denied:', err);
+          throw err;
+        }
+      }
+      
+      stop() {
+        if (this.stream) {
+          this.stream.getTracks().forEach(track => track.stop());
+          this.stream = null;
+        }
+        this.video.srcObject = null;
+        this.scanning = false;
+        if (this.animationId) {
+          cancelAnimationFrame(this.animationId);
+        }
+      }
+      
+      scan() {
+        if (!this.scanning) return;
+        
+        this.ctx.drawImage(this.video, 0, 0, this.canvas.width, this.canvas.height);
+        const imageData = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
+        
+        const code = jsQR(imageData.data, imageData.width, imageData.height);
+        
+        if (code) {
+          const result = code.data;
+          this.onScan(result);
+        }
+        
+        this.animationId = requestAnimationFrame(() => this.scan());
+      }
+      
+      setCallback(callback) {
+        this.onScan = callback;
+      }
+    }
+
+    // Initialize app
+    const scanner = new QRScanner('qr-reader');
+    let students = [];
+    let scannedStudents = new Set();
+
+    // Session form
+    document.getElementById('sessionForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+    });
+
+    // Generate QR / Start Scanner
+    document.getElementById('generateQR').addEventListener('click', async () => {
+      const btn = document.getElementById('generateQR');
+      const status = document.getElementById('qr-status');
+      const container = document.getElementById('qr-camera-container');
+      
+      if (!scanner.scanning) {
+        try {
+          btn.textContent = 'Stop Scanner';
+          btn.disabled = false;
+          status.textContent = '🔍 Scanning for student QR codes...';
+          status.className = 'qr-status scanning';
+          container.classList.add('active');
+          
+          await scanner.start();
+          scanner.setCallback(handleQRScan);
+        } catch (err) {
+          status.textContent = '❌ Camera access denied';
+          status.className = 'qr-status error';
+        }
+      } else {
+        scanner.stop();
+        btn.textContent = 'Generate QR Code';
+        status.textContent = 'Scanner stopped';
+        status.className = 'qr-status';
+        container.classList.remove('active');
+      }
+    });
+
+    // Handle QR scan
+    function handleQRScan(result) {
+      const status = document.getElementById('qr-status');
+      
+      try {
+        const studentData = JSON.parse(result);
+        const studentId = studentData.id;
+        
+        if (scannedStudents.has(studentId)) {
+          status.textContent = `⚠️ ${studentData.name} already scanned`;
+          return;
+        }
+        
+        scannedStudents.add(studentId);
+        students.push({
+          id: studentId,
+          name: studentData.name,
+          status: 'present',
+          time: new Date().toLocaleTimeString(),
+          remarks: ''
+        });
+        
+        status.textContent = `✅ ${studentData.name} checked in!`;
+        status.className = 'qr-status success';
+        
+        updateAttendanceTable();
+        updateSummary();
+        
+        // Reset status after 2 seconds
+        setTimeout(() => {
+          status.textContent = '🔍 Scanning for student QR codes...';
+          status.className = 'qr-status scanning';
+        }, 2000);
+        
+      } catch (e) {
+        status.textContent = '❌ Invalid QR code';
+        status.className = 'qr-status error';
+      }
+    }
+
+    // Update attendance table
+    function updateAttendanceTable() {
+      const tbody = document.querySelector('#attendanceTable tbody');
+      const className = document.getElementById('class').value.toUpperCase();
+      document.getElementById('classHeader').textContent = `Class: ${className}`;
+      
+      tbody.innerHTML = '';
+      
+      students.forEach((student, index) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${index + 1}</td>
+          <td>${student.id}</td>
+          <td>${student.name}</td>
+          <td>
+            <select onchange="updateStudentStatus('${student.id}', this.value)">
+              <option value="present" ${student.status === 'present' ? 'selected' : ''}>Present</option>
+              <option value="late" ${student.status === 'late' ? 'selected' : ''}>Late</option>
+              <option value="absent" ${student.status === 'absent' ? 'selected' : ''}>Absent</option>
+              <option value="excused" ${student.status === 'excused' ? 'selected' : ''}>Excused</option>
+            </select>
+          </td>
+          <td>${student.time}</td>
+          <td><input type="text" value="${student.remarks}" onchange="updateStudentRemarks('${student.id}', this.value)" placeholder="Optional remarks" /></td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
+    // Update student status
+    function updateStudentStatus(id, status) {
+      const student = students.find(s => s.id === id);
+      if (student) student.status = status;
+      updateSummary();
+    }
+
+    // Update student remarks
+    function updateStudentRemarks(id, remarks) {
+      const student = students.find(s => s.id === id);
+      if (student) student.remarks = remarks;
+    }
+
+    // Update summary
+    function updateSummary() {
+      const total = students.length;
+      const present = students.filter(s => s.status === 'present').length;
+      const absent = students.filter(s => s.status === 'absent').length;
+      const late = students.filter(s => s.status === 'late').length;
+      
+      document.getElementById('totalStudents').innerHTML = `<strong>Total Students:</strong> ${total}`;
+      document.getElementById('presentCount').innerHTML = `<strong>Present:</strong> ${present}`;
+      document.getElementById('absentCount').innerHTML = `<strong>Absent:</strong> ${total - present}`;
+      document.getElementById('lateCount').innerHTML = `<strong>Late:</strong> ${late}`;
+    }
+
+    // Submit attendance
+    document.getElementById('submitAttendance').addEventListener('click', () => {
+      const sessionData = {
+        class: document.getElementById('class').value,
+        date: document.getElementById('date').value,
+        time: document.getElementById('time').value,
+        students: students
+      };
+      
+      console.log('Submitting attendance:', sessionData);
+      alert('Attendance submitted successfully!\n\n' + JSON.stringify(sessionData, null, 2));
+      
+      // Reset for next session
+      students = [];
+      scannedStudents.clear();
+      updateAttendanceTable();
+      updateSummary();
+      scanner.stop();
+      document.getElementById('generateQR').textContent = 'Start camera';
+      document.getElementById('qr-status').textContent = 'Click "Start camera" to start scanner';
+      document.getElementById('qr-status').className = 'qr-status';
+      document.getElementById('qr-camera-container').classList.remove('active');
+    });
+
+    // Set default date to today
+    document.getElementById('date').valueAsDate = new Date();
+  </script>
+</body>
+</html>

@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard – Attendance System</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f5f6f8;
+      margin: 0;
+      padding: 0;
+      padding-top: 40px;
+      padding-bottom: 40px;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+    h1 {
+      color: #2c3e50;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    /* General section */
+    section {
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      padding: 20px 24px;
+      margin-bottom: 20px;
+    }
+    section h2 {
+      margin-top: 0;
+      color: #2c3e50;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 6px;
+      margin-bottom: 16px;
+      font-size: 1.1rem;
+    }
+    section h3 {
+      margin-top: 16px;
+      margin-bottom: 8px;
+      color: #34495e;
+      font-size: 1rem;
+    }
+
+    /* Table styling */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 16px;
+    }
+    th, td {
+      padding: 10px 12px;
+      border-bottom: 1px solid #eee;
+      text-align: left;
+    }
+    th {
+      background-color: #3498db;
+      color: white;
+      font-weight: normal;
+    }
+    tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    /* Form inputs */
+    label {
+      display: inline-block;
+      margin-right: 12px;
+      margin-bottom: 4px;
+      color: #34495e;
+      font-weight: 500;
+    }
+    input[type="text"],
+    select,
+    input[type="time"],
+    input[type="date"] {
+      padding: 8px 10px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 14px;
+      margin-bottom: 12px;
+    }
+    button[type="submit"] {
+      padding: 10px 16px;
+      background-color: #3498db;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    button[type="submit"]:hover {
+      background-color: #2980b9;
+    }
+
+    /* Cards layout for small screens */
+    @media (max-width: 768px) {
+      section {
+        padding: 16px;
+      }
+      label {
+        display: block;
+        margin-right: 0;
+        margin-bottom: 4px;
+      }
+      input[type="text"],
+      select,
+      input[type="time"],
+      input[type="date"] {
+        width: 100%;
+        margin-bottom: 8px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Teachers Dashboard – Attendance System</h1>
+
+    <!-- User Management -->
+    <section>
+      <h2>Manage Attendance</h2>
+
+      <h3>Students</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Student ID</th>
+            <th>Name</th>
+            <th>Program</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>IT12345</td>
+            <td>Juan Dela Cruz</td>
+            <td>BSIT</td>
+            <td>
+              <select>
+                <option value="edit">Edit</option>
+                <option value="delete">Delete</option>
+              </select>
+            </td>
+          </tr>
+          <!-- Add more rows as needed -->
+        </tbody>
+      </table>
+
+      <h3>Teachers</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Teacher Name</th>
+            <th>Department</th>
+            <th>Subject</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Maria Maribell</td>
+            <td>BSIT</td>
+            <td>ITELEC</td>
+            <td>
+              <select>
+                <option value="edit">Edit</option>
+                <option value="delete">Delete</option>
+              </select>
+            </td>
+          </tr>
+          <!-- Add more rows as needed -->
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Class & Schedule Management -->
+    <section>
+      <h2>Classes & Schedules</h2>
+      <form>
+        <label for="class-code">Class Code:</label>
+        <input type="text" id="class-code" name="class-code" />
+
+        <label for="program">Program:</label>
+        <select id="program" name="program">
+          <option value="bsit">BSIT</option>
+          <option value="bsce">BSCE</option>
+        </select>
+
+        <label for="day">Day:</label>
+        <select id="day" name="day">
+          <option value="mon">Monday</option>
+          <option value="tue">Tuesday</option>
+        </select>
+
+        <label for="time-from">From:</label>
+        <input type="time" id="time-from" name="time-from" />
+
+        <label for="time-to">To:</label>
+        <input type="time" id="time-to" name="time-to" />
+
+        <label for="room">Room:</label>
+        <input type="text" id="room" name="room" />
+
+        <button type="submit">Add Class</button>
+      </form>
+    </section>
+
+    <!-- Reports -->
+    <section>
+      <h2>Attendance Reports</h2>
+      <form>
+        <label for="class-report">Class:</label>
+        <select id="class-report" name="class-report">
+          <option value="bsit1a">BSIT 1A</option>
+          <option value="bsit1b">BSIT 1B</option>
+          <option value="bsce1a">BSCE 1A</option>
+        </select>
+
+        <label for="period-from">From:</label>
+        <input type="date" id="period-from" name="period-from" />
+
+        <label for="period-to">To:</label>
+        <input type="date" id="period-to" name="period-to" />
+
+        <button type="submit">Generate Report</button>
+      </form>
+    </section>
+  </div>
+</body>
+</html>
